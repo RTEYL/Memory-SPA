@@ -1,0 +1,30 @@
+h1 {
+	text-align: center;
+}
+div.lb-container {
+	box-sizing: border-box;
+	float: left;
+}
+.hide {
+	display: none;
+}
+ul.lb li {
+	list-style-type: none;
+}
+ul.lb {
+	padding-inline-start: 0px;
+}
+.grid-container {
+	box-sizing: border-box;
+}
+.grid-item {
+	margin: 1%;
+	width: 20%;
+	height: 30%;
+	padding: 20px;
+	float: left;
+	border-style: solid;
+}
+.highlight {
+	background-color: rgba(5, 223, 187, 1);
+}
