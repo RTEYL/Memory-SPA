@@ -38,3 +38,42 @@ let highlightChoices = (choices) => {
 let arraysAreEqual = (arr1, arr2) => {
 	return JSON.stringify(arr1) == JSON.stringify(arr2) ? true : false;
 };
+let keepPlaying = (userChoiceArray, correctChoiceArray) => {
+	if (userChoiceArray == '' || JSON.stringify(userChoiceArray) == JSON.stringify(correctChoiceArray)) {
+		play(correctChoiceArray);
+	} else {
+		return false;
+	}
+};
+
+function play(correctChoiceArray = [], userChoiceArray = [], callback) {
+	console.log('play');
+	let numCorrect = -1;
+	let boxes = document.querySelectorAll('.box.grid-item');
+	let randomChoice;
+	numCorrect += 1;
+	randomChoice = boxes[Math.floor(Math.random() * boxes.length)];
+	correctChoiceArray.push(randomChoice);
+	highlightChoices(correctChoiceArray);
+	waitForUserClick();
+	function waitForUserClick() {
+		boxes.forEach(function(node) {
+			if (node.getAttribute('listener') !== 'true') {
+				node.addEventListener('click', (event) => {
+					const eventClicked = event.target;
+					eventClicked.setAttribute('listener', 'true');
+					userChoiceArray.push([ event.currentTarget ]);
+					highlightChoices([ event.currentTarget ]);
+					keepPlaying(userChoiceArray, correctChoiceArray);
+				});
+			} else {
+				waitForUserClick();
+			}
+		});
+	}
+	console.log('user', userChoiceArray);
+	console.log('correct', correctChoiceArray);
+	// reset()
+	console.log('done');
+	displayResults(correctChoiceArray, userChoiceArray, numCorrect);
+}
