@@ -21,3 +21,17 @@ let createUserHTML = (users) => {
 		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
 	});
 };
+let displayResults = (correctChoiceArray, userChoiceArray, numCorrect) => {
+	// failure msg
+	// display score
+	// use a modal?
+	// update info with fetch
+};
+let highlightChoices = (choices) => {
+	choices.forEach((choice) => {
+		choice.classList.add('highlight');
+		setTimeout(() => {
+			choice.classList.remove('highlight');
+		}, 3000);
+	});
+};
