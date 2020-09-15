@@ -1,6 +1,9 @@
 h1 {
 	text-align: center;
 }
+button#play {
+	box-sizing: border-box;
+}
 div.lb-container {
 	box-sizing: border-box;
 	float: left;
@@ -13,6 +16,7 @@ ul.lb li {
 }
 ul.lb {
 	padding-inline-start: 0px;
+	padding-bottom: 50%;
 }
 .grid-container {
 	box-sizing: border-box;
