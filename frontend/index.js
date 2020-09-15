@@ -10,3 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			console.log(err);
 		});
 });
+let createLeaderboard = (userData) => {
+	let container = document.querySelector('.lb-container');
+	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
+	createUserHTML(userData);
+};
+let createUserHTML = (users) => {
+	let ul = document.querySelector('ul.lb');
+	users.map((user, i) => {
+		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
+	});
+};
