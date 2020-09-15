@@ -35,3 +35,6 @@ let highlightChoices = (choices) => {
 		}, 3000);
 	});
 };
+let arraysAreEqual = (arr1, arr2) => {
+	return JSON.stringify(arr1) == JSON.stringify(arr2) ? true : false;
+};
