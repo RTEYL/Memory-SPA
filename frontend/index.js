@@ -46,7 +46,34 @@ function play(correctChoiceArray = []) {
 		});
 	});
 }
-
+function keepPlaying(userChoiceArray, correctChoiceArray) {
+	console.log('keep playing');
+	let click = waitForUserClick();
+	click.then(() => {
+		if (arraysAreEqual(userChoiceArray, correctChoiceArray)) {
+			console.log(userChoiceArray.length, ' are equal ', correctChoiceArray.length);
+			console.log('incrementing');
+			userChoiceArray.length = 0;
+			play(correctChoiceArray, userChoiceArray);
+		} else if (userChoiceArray.length !== correctChoiceArray.length) {
+			console.log('wait again');
+			console.log(userChoiceArray.length, ' not equal ', correctChoiceArray.length);
+			waitForUserClick();
+		} else {
+			displayResults(correctChoiceArray, userChoiceArray);
+		}
+	});
+}
+function waitForUserClick() {
+	console.log('wait');
+	return new Promise((resolve) => {
+		let click = document.querySelector('.listening');
+		if (click) {
+			click.classList.remove('listening');
+			resolve();
+		}
+	});
+}
 function displayResults(correctChoiceArray, userChoiceArray) {
 	console.log('display');
 	let modal = document.querySelector('.modal');
