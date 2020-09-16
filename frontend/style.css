@@ -32,3 +32,12 @@ ul.lb {
 .highlight {
 	background-color: rgba(5, 223, 187, 1);
 }
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+}
+.modal-content {
+	width: 85%;
+	height: 85%;
+}
