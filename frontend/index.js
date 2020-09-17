@@ -98,20 +98,20 @@ function keepPlaying(userChoiceArray, correctChoiceArray) {
 			console.log('wait again');
 			waitForUserClick();
 		} else {
-			displayResults(correctChoiceArray, userChoiceArray);
+			displayResults(userChoiceArray);
 		}
 	});
 }
-function displayResults(correctChoiceArray, userChoiceArray) {
+function displayResults(userChoiceArray) {
 	console.log('display');
 	let modal = document.querySelector('.modal');
-	let content = document.querySelector('.modal-content');
 	let closeBtn = document.querySelector('.close');
+	let points = document.querySelector('#points');
 	modal.style.display = 'block';
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
 	});
-	modal.innerHTML = `<h3>You scored <em>${userChoiceArray.length - 1}</em>pts.</h3>`;
+	points.textContent = userChoiceArray.length - 1;
 	// failure msg
 	// display score
 	// use a modal?
