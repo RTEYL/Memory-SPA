@@ -89,8 +89,7 @@ function keepPlaying(userChoiceArray, correctChoiceArray) {
 			setTimeout(() => {
 				play(correctChoiceArray, userChoiceArray);
 			}, 2000);
-		}
-		if (userChoiceArray.length !== correctChoiceArray.length) {
+		} else if (userChoiceArray.length !== correctChoiceArray.length) {
 			console.log('wait again');
 			waitForUserClick();
 		} else {
@@ -98,7 +97,6 @@ function keepPlaying(userChoiceArray, correctChoiceArray) {
 		}
 	});
 }
-
 function displayResults(correctChoiceArray, userChoiceArray) {
 	console.log('display');
 	let modal = document.querySelector('.modal');
