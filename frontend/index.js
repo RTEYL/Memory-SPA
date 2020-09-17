@@ -29,19 +29,18 @@ function play(correctChoiceArray = []) {
 	button.classList.add('hide');
 	randomChoice = boxes[Math.floor(Math.random() * boxes.length)];
 	correctChoiceArray.push(randomChoice);
-	highlightChoices(correctChoiceArray);
+	highlightChoices([ ...correctChoiceArray ]);
 	boxes.forEach(function(node) {
 		node.addEventListener('click', (event) => {
 			const eventClicked = event.target;
 			eventClicked.classList.add('listening');
 			userChoiceArray.push(event.currentTarget);
-			highlightChoices([ event.currentTarget ]);
-			keepPlaying(userChoiceArray, correctChoiceArray);
+			highlightChoices([ ...userChoiceArray ]);
+			keepPlaying([ ...userChoiceArray ], [ ...correctChoiceArray ]);
 		});
 	});
 }
 function highlightChoices(choices) {
-	console.log('highlight');
 	choices.forEach((choice) => {
 		console.log('highlighted', choice);
 		choice.classList.add('highlight');
@@ -70,7 +69,6 @@ function arraysAreEqual(arr1, arr2) {
 	}
 	return true;
 }
-
 function keepPlaying(userChoiceArray, correctChoiceArray) {
 	console.log('keep playing');
 	let click = waitForUserClick();
@@ -78,9 +76,10 @@ function keepPlaying(userChoiceArray, correctChoiceArray) {
 		if (arraysAreEqual(userChoiceArray, correctChoiceArray)) {
 			console.log(userChoiceArray.length, ' are equal ', correctChoiceArray.length);
 			console.log('incrementing');
-			userChoiceArray.length = 0;
-			play(correctChoiceArray, userChoiceArray);
-		} else if (userChoiceArray.length !== correctChoiceArray.length) {
+			userChoiceArray = [];
+			play(correctChoiceArray);
+		}
+		if (userChoiceArray.length !== correctChoiceArray.length) {
 			console.log('wait again');
 			console.log(userChoiceArray.length, ' not equal ', correctChoiceArray.length);
 			waitForUserClick();
@@ -89,6 +88,7 @@ function keepPlaying(userChoiceArray, correctChoiceArray) {
 		}
 	});
 }
+
 function displayResults(correctChoiceArray, userChoiceArray) {
 	console.log('display');
 	let modal = document.querySelector('.modal');
