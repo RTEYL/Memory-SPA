@@ -27,19 +27,14 @@ function play(correctChoiceArray = []) {
 	let randomChoice;
 	let userChoiceArray = [];
 	button.classList.add('hide');
-	console.log('c arr', userChoiceArray);
 	randomChoice = boxes[Math.floor(Math.random() * boxes.length)];
 	correctChoiceArray.push(randomChoice);
-	console.log('random choice', randomChoice);
 	highlightChoices(correctChoiceArray);
-	console.log('u ', userChoiceArray.length);
-	console.log('c ', correctChoiceArray.length);
 	boxes.forEach(function(node) {
 		node.addEventListener('click', (event) => {
 			const eventClicked = event.target;
 			eventClicked.classList.add('listening');
 			userChoiceArray.push(event.currentTarget);
-			console.log(event.currentTarget);
 			highlightChoices([ event.currentTarget ]);
 			keepPlaying(userChoiceArray, correctChoiceArray, boxes);
 		});
