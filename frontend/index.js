@@ -24,39 +24,44 @@ function play(correctChoiceArray = [], userChoiceArray) {
 	console.log('play');
 	let button = document.querySelector('#play');
 	let boxes = document.querySelectorAll('.box.grid-item');
-	let randomChoice;
+	let randomChoice = getRandBox(boxes);
+
 	userChoiceArray = [];
 	button.classList.add('hide');
-	randomChoice = boxes[Math.floor(Math.random() * boxes.length)];
 	correctChoiceArray.push(randomChoice);
-	highlightChoices([ ...correctChoiceArray ]);
+	highlightChoices([ randomChoice ]);
 	boxes.forEach(function(node) {
 		node.addEventListener('click', (event) => {
 			const eventClicked = event.target;
 			eventClicked.classList.add('listening');
 			userChoiceArray.push(event.currentTarget);
-			highlightChoices(userChoiceArray);
+			highlightChoices(event.currentTarget);
 			keepPlaying([ ...userChoiceArray ], [ ...correctChoiceArray ]);
 		});
 	});
+}
+function getRandBox(boxes) {
+	let i = Math.floor(Math.random() * boxes.length);
+	let box = boxes[i];
+	return box.classList.contains('highlight') ? box : boxes[i];
 }
 function highlightChoices(choice) {
 	let light = 'highlight';
 	if (Array.isArray(choice)) {
 		choice.forEach((elm) => {
-			console.log('highlighted', choice);
-			elm.classList.add(light);
-			setTimeout(() => {
-				elm.classList.remove(light);
-			}, 2000);
+			return new Promise((resolve) => {
+				elm.classList.add(light);
+				setTimeout(() => {
+					elm.classList.remove(light);
+					resolve();
+				}, 1500);
+			});
 		});
 	} else {
+		choice.classList.add(light);
 		setTimeout(() => {
-			choice.classList.add(light);
-			setTimeout(() => {
-				choice.classList.remove(light);
-			}, 4000);
-		}, 2000);
+			choice.classList.remove(light);
+		}, 1500);
 	}
 }
 function waitForUserClick() {
