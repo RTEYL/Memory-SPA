@@ -23,11 +23,10 @@ let createUserHTML = (users) => {
 function play(correctChoiceArray = []) {
 	console.log('play');
 	let button = document.querySelector('#play');
-	button.classList.add('hide');
 	let boxes = document.querySelectorAll('.box.grid-item');
 	let randomChoice;
 	let userChoiceArray = [];
-
+	button.classList.add('hide');
 	console.log('c arr', userChoiceArray);
 	randomChoice = boxes[Math.floor(Math.random() * boxes.length)];
 	correctChoiceArray.push(randomChoice);
