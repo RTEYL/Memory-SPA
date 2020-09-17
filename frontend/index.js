@@ -40,6 +40,30 @@ function play(correctChoiceArray = []) {
 		});
 	});
 }
+function highlightChoices(choices) {
+	console.log('highlight');
+	choices.forEach((choice) => {
+		console.log('highlighted', choice);
+		choice.classList.add('highlight');
+		setTimeout(() => {
+			choice.classList.remove('highlight');
+		}, 3000);
+	});
+}
+function waitForUserClick() {
+	console.log('wait');
+	return new Promise((resolve) => {
+		let click = document.querySelector('.listening');
+		if (click) {
+			click.classList.remove('listening');
+			resolve();
+		}
+	});
+}
+function arraysAreEqual(arr1, arr2) {
+	console.log('user:', arr1, 'comp:', arr2);
+	return JSON.stringify(arr1) == JSON.stringify(arr2) ? true : false;
+}
 function keepPlaying(userChoiceArray, correctChoiceArray) {
 	console.log('keep playing');
 	let click = waitForUserClick();
@@ -58,16 +82,6 @@ function keepPlaying(userChoiceArray, correctChoiceArray) {
 		}
 	});
 }
-function waitForUserClick() {
-	console.log('wait');
-	return new Promise((resolve) => {
-		let click = document.querySelector('.listening');
-		if (click) {
-			click.classList.remove('listening');
-			resolve();
-		}
-	});
-}
 function displayResults(correctChoiceArray, userChoiceArray) {
 	console.log('display');
 	let modal = document.querySelector('.modal');
@@ -82,18 +96,4 @@ function displayResults(correctChoiceArray, userChoiceArray) {
 	// display score
 	// use a modal?
 	// update info with fetch
-}
-function highlightChoices(choices) {
-	console.log('highlight');
-	choices.forEach((choice) => {
-		console.log('highlighted', choice);
-		choice.classList.add('highlight');
-		setTimeout(() => {
-			choice.classList.remove('highlight');
-		}, 3000);
-	});
-}
-function arraysAreEqual(arr1, arr2) {
-	console.log('user:', arr1, 'comp:', arr2);
-	return JSON.stringify(arr1) == JSON.stringify(arr2) ? true : false;
 }
