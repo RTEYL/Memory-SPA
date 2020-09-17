@@ -20,12 +20,12 @@ let createUserHTML = (users) => {
 		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
 	});
 };
-function play(correctChoiceArray = []) {
+function play(correctChoiceArray = [], userChoiceArray) {
 	console.log('play');
 	let button = document.querySelector('#play');
 	let boxes = document.querySelectorAll('.box.grid-item');
 	let randomChoice;
-	let userChoiceArray = [];
+	userChoiceArray = [];
 	button.classList.add('hide');
 	randomChoice = boxes[Math.floor(Math.random() * boxes.length)];
 	correctChoiceArray.push(randomChoice);
@@ -35,7 +35,7 @@ function play(correctChoiceArray = []) {
 			const eventClicked = event.target;
 			eventClicked.classList.add('listening');
 			userChoiceArray.push(event.currentTarget);
-			highlightChoices([ ...userChoiceArray ]);
+			highlightChoices(userChoiceArray);
 			keepPlaying([ ...userChoiceArray ], [ ...correctChoiceArray ]);
 		});
 	});
