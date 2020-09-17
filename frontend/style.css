@@ -34,10 +34,19 @@ ul.lb {
 }
 .modal {
 	display: none;
-	position: fixed;
-	z-index: 1;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 251, 1, 0.75);
 }
 .modal-content {
-	width: 85%;
-	height: 85%;
+	position: absolute;
+	width: 50%;
+	height: 43.9%;
+	top: 89px;
+	left: 25%;
+	border: solid;
+	border-color: black;
+	z-index: 1;
+	background-color: rgb(0, 255, 85);
 }
