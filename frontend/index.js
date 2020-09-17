@@ -106,7 +106,7 @@ function displayResults(correctChoiceArray, userChoiceArray) {
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
 	});
-	modal.innerHTML = `<h3>You scored <em>${userChoiceArray.length}</em>pts.</h3>`;
+	modal.innerHTML = `<h3>You scored <em>${userChoiceArray.length - 1}</em>pts.</h3>`;
 	// failure msg
 	// display score
 	// use a modal?
