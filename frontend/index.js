@@ -36,7 +36,7 @@ function play(correctChoiceArray = []) {
 			eventClicked.classList.add('listening');
 			userChoiceArray.push(event.currentTarget);
 			highlightChoices([ event.currentTarget ]);
-			keepPlaying(userChoiceArray, correctChoiceArray, boxes);
+			keepPlaying(userChoiceArray, correctChoiceArray);
 		});
 	});
 }
