@@ -40,14 +40,24 @@ function play(correctChoiceArray = [], userChoiceArray) {
 		});
 	});
 }
-function highlightChoices(choices) {
-	choices.forEach((choice) => {
-		console.log('highlighted', choice);
-		choice.classList.add('highlight');
+function highlightChoices(choice) {
+	let light = 'highlight';
+	if (Array.isArray(choice)) {
+		choice.forEach((elm) => {
+			console.log('highlighted', choice);
+			elm.classList.add(light);
+			setTimeout(() => {
+				elm.classList.remove(light);
+			}, 2000);
+		});
+	} else {
 		setTimeout(() => {
-			choice.classList.remove('highlight');
-		}, 3000);
-	});
+			choice.classList.add(light);
+			setTimeout(() => {
+				choice.classList.remove(light);
+			}, 4000);
+		}, 2000);
+	}
 }
 function waitForUserClick() {
 	console.log('wait');
@@ -74,14 +84,14 @@ function keepPlaying(userChoiceArray, correctChoiceArray) {
 	let click = waitForUserClick();
 	click.then(() => {
 		if (arraysAreEqual(userChoiceArray, correctChoiceArray)) {
-			console.log(userChoiceArray.length, ' are equal ', correctChoiceArray.length);
 			console.log('incrementing');
 			userChoiceArray = [];
-			play(correctChoiceArray);
+			setTimeout(() => {
+				play(correctChoiceArray, userChoiceArray);
+			}, 2000);
 		}
 		if (userChoiceArray.length !== correctChoiceArray.length) {
 			console.log('wait again');
-			console.log(userChoiceArray.length, ' not equal ', correctChoiceArray.length);
 			waitForUserClick();
 		} else {
 			displayResults(correctChoiceArray, userChoiceArray);
