@@ -9,10 +9,10 @@ fetch('http://localhost:3000/leaderboards')
 		alert(err);
 	});
 
-let createLeaderboardHTML = (userData) => {
+let createLeaderboardHTML = (user) => {
 	let container = document.querySelector('.lb-container');
 	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
-	createUserHTML(userData);
+	createUserHTML(user);
 };
 let createUserHTML = (users) => {
 	let ul = document.querySelector('ul.lb');
@@ -20,62 +20,109 @@ let createUserHTML = (users) => {
 		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
 	});
 };
-function play(correctChoiceArray = [], userChoiceArray) {
-	console.log('play');
-	let button = document.querySelector('#play');
-	let boxes = document.querySelectorAll('.box.grid-item');
-	let randomChoice = getRandBox(boxes);
-
-	userChoiceArray = [];
-	button.classList.add('hide');
-	correctChoiceArray.push(randomChoice);
-	highlightChoices([ randomChoice ]);
-	boxes.forEach(function(node) {
-		node.addEventListener('click', (event) => {
-			const eventClicked = event.target;
-			eventClicked.classList.add('listening');
-			userChoiceArray.push(event.currentTarget);
-			highlightChoices(event.currentTarget);
-			keepPlaying([ ...userChoiceArray ], [ ...correctChoiceArray ]);
+class User {
+	constructor(username) {
+		this.username = username;
+		this.choiceArray = [];
+	}
+	get points() {
+		return this.choiceArray.length - 1;
+	}
+	static waitForClick() {
+		return new Promise((resolve) => {
+			let click = document.querySelector('.listening');
+			if (click) {
+				click.classList.remove('listening');
+				resolve();
+			}
 		});
+	}
+}
+class Computer {
+	constructor() {
+		this.choiceArray = [];
+	}
+	static getRandBox(boxes) {
+		return boxes[Math.floor(Math.random() * boxes.length)];
+	}
+}
+
+let increment = (user, comp, boxes) => {
+	user.choiceArray = [];
+	comp.choiceArray.push(Computer.getRandBox(boxes));
+	highlightChoices(comp.choiceArray);
+	addBoxListeners(user, comp, boxes);
+	keepPlaying(user, comp, boxes);
+};
+let play = () => {
+	let user = new User('tyler');
+	let comp = new Computer();
+	let button = document.querySelector('#play');
+	let boxes = document.querySelectorAll('.grid-item');
+	button.classList.add('hide');
+	increment(user, comp, boxes);
+};
+let addBoxListeners = (user, comp, boxes) => {
+	boxes.forEach((node) => {
+		if (!node.getAttribute('listening')) {
+			node.addEventListener('click', (event) => {
+				const eventClicked = event.target;
+				eventClicked.classList.add('listening');
+				user.choiceArray.push(event.currentTarget);
+				highlightChoices(event.currentTarget);
+				keepPlaying(user, comp, boxes);
+			});
+			node.setAttribute('listening', 'true');
+		}
 	});
-}
-function getRandBox(boxes) {
-	let i = Math.floor(Math.random() * boxes.length);
-	let box = boxes[i];
-	return box.classList.contains('highlight') ? box : boxes[i];
-}
+	return boxes;
+};
+
+let keepPlaying = (user, comp, boxes) => {
+	let click = User.waitForClick();
+	click.then(() => {
+		if (arraysAreEqual(user.choiceArray, comp.choiceArray)) {
+			setTimeout(() => {
+				user.choiceArray = [];
+				increment(user, comp, boxes);
+			}, 2000);
+		} else if (user.choiceArray.length !== comp.choiceArray.length) {
+			keepPlaying(user, comp, boxes);
+		} else {
+			displayResults(user);
+		}
+	});
+};
+let blink = (elm) => {
+	let flash = setInterval(() => {
+		setTimeout(() => {
+			elm.classList.toggle('comp-highlight');
+		}, 300);
+	}, 250);
+	setTimeout(() => {
+		clearInterval(flash);
+	}, 1500);
+};
 function highlightChoices(choice) {
-	let light = 'highlight';
 	if (Array.isArray(choice)) {
 		choice.forEach((elm) => {
-			return new Promise((resolve) => {
-				elm.classList.add(light);
+			if (elm.classList.contains('comp-highlight')) {
+				blink(elm);
+			} else {
+				elm.classList.add('comp-highlight');
 				setTimeout(() => {
-					elm.classList.remove(light);
-					resolve();
+					elm.classList.remove('comp-highlight');
 				}, 1500);
-			});
+			}
 		});
 	} else {
-		choice.classList.add(light);
+		choice.classList.add('highlight');
 		setTimeout(() => {
-			choice.classList.remove(light);
+			choice.classList.remove('highlight');
 		}, 1500);
 	}
 }
-function waitForUserClick() {
-	console.log('wait');
-	return new Promise((resolve) => {
-		let click = document.querySelector('.listening');
-		if (click) {
-			click.classList.remove('listening');
-			resolve();
-		}
-	});
-}
 function arraysAreEqual(arr1, arr2) {
-	console.log('user:', arr1, 'comp:', arr2);
 	if (arr1 === arr2) return true;
 	if (arr1 == null || arr2 == null) return false;
 	if (arr1.length !== arr2.length) return false;
@@ -84,26 +131,7 @@ function arraysAreEqual(arr1, arr2) {
 	}
 	return true;
 }
-function keepPlaying(userChoiceArray, correctChoiceArray) {
-	console.log('keep playing');
-	let click = waitForUserClick();
-	click.then(() => {
-		if (arraysAreEqual(userChoiceArray, correctChoiceArray)) {
-			console.log('incrementing');
-			userChoiceArray = [];
-			setTimeout(() => {
-				play(correctChoiceArray, userChoiceArray);
-			}, 2000);
-		} else if (userChoiceArray.length !== correctChoiceArray.length) {
-			console.log('wait again');
-			waitForUserClick();
-		} else {
-			displayResults(userChoiceArray);
-		}
-	});
-}
-function displayResults(userChoiceArray) {
-	console.log('display');
+function displayResults(user) {
 	let modal = document.querySelector('.modal');
 	let closeBtn = document.querySelector('.close');
 	let points = document.querySelector('#points');
@@ -111,7 +139,7 @@ function displayResults(userChoiceArray) {
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
 	});
-	points.textContent = userChoiceArray.length - 1;
+	points.textContent = user.points;
 	// failure msg
 	// display score
 	// use a modal?
