@@ -16,7 +16,7 @@ ul.lb li {
 }
 ul.lb {
 	padding-inline-start: 0px;
-	padding-bottom: 50%;
+	padding-bottom: 400px;
 }
 .grid-container {
 	box-sizing: border-box;
@@ -29,7 +29,23 @@ ul.lb {
 	float: left;
 	border-style: solid;
 }
+.grid-item:hover {
+	cursor: pointer;
+}
+.close:hover {
+	cursor: pointer;
+}
 .highlight {
+	background-color: rgba(5, 223, 187, 1);
+}
+.comp-highlight {
+	background-color: red;
+}
+.instruction {
+	box-sizing: border-box;
+	float: right;
+}
+#t-highlight {
 	background-color: rgba(5, 223, 187, 1);
 }
 .modal {
@@ -49,7 +65,7 @@ ul.lb {
 	border-color: black;
 	z-index: 1;
 	background-color: rgb(0, 255, 85);
-	animation: modal 2s linear forwards;
+	animation: modal 1.5s linear forwards;
 }
 
 @keyframes modal {

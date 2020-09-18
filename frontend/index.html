@@ -10,16 +10,27 @@
   <h1>Memory Game</h1>
   <button id="play"type="submit" onclick="play()">Play</button>
   <div class="lb-container"></div>
-  <div class="box-container grid-container">
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
-    <ul class="box grid-item"></ul>
+  <div class="instuctions">
+    <h3 id="head">Welcome to the Memory Game!</h3>
+    <p>To begin click the 'Play' button</p>
+    <ul>Once the game starts:
+      <li><p>A random box will <span id='t-highlight'>highlight</span></p></li>
+      <li><p>Click the correct <span id='t-highlight'>highlighted box</span></p></li>
+      <li><p>The next box will <span id='t-highlight'>highlight</span></p></li>
+      <li><p>Click the first box then click on the new box</p></li>
+      <li><p>The goal is to <span id='t-highlight'>remember</span> the order of each box as it's highlighted the longer you play the more difficult it will be to remember the correct order of boxes to click</p></li>
+    </ul>
+  </div>
+  <div class="grid-container">
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
+    <ul class="grid-item"></ul>
   </div>
   <div class="modal">
     <div class="modal-content">
