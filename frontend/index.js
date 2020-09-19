@@ -10,6 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
 			alert(err);
 		});
 });
+let createLeaderboardHTML = (user) => {
+	let container = document.querySelector('.lb-container');
+	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
+	createUserHTML(user);
+};
+let createUserHTML = (users) => {
+	let ul = document.querySelector('ul.lb');
+	users.map((user, i) => {
+		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
+	});
+};
 class User {
 	constructor(username) {
 		this.username = username;
@@ -130,7 +141,6 @@ let blink = (elm, count) => {
 	}, count);
 };
 function highlightChoices(choice) {
-	console.log(choice);
 	if (choice instanceof Computer) {
 		let lastElm = choice.choiceArray.slice(-1)[0];
 		if (lastElm.classList.contains('comp-highlight')) {
