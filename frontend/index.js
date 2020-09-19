@@ -99,12 +99,12 @@ let insertBoxes = (comp) => {
 let play = (difficulty = 'easy') => {
 	let user = new User('tyler'),
 		comp = new Computer(difficulty),
-		buttons = document.querySelectorAll('#play'),
-		boxes = document.querySelectorAll('.grid-item');
+		buttons = document.querySelectorAll('#play');
 	buttons.forEach((btn) => {
 		btn.classList.add('hide');
 	});
 	insertBoxes(comp);
+	let boxes = document.querySelectorAll('.grid-item');
 	increment(user, comp, boxes);
 };
 let addBoxListeners = (user, comp, boxes) => {
