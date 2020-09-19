@@ -39,27 +39,70 @@ class User {
 	}
 }
 class Computer {
-	constructor() {
+	constructor(difficulty) {
+		this.difficulty = difficulty;
 		this.choiceArray = [];
+	}
+
+	set difficulty(val) {
+		switch (val) {
+			case 'hard':
+				this.intValCount = 1000;
+				this.boxCount = 12;
+				this.highlightOne = true;
+				this.extraPointCount = 2;
+				break;
+			case 'medium':
+				this.intValCount = 1750;
+				this.boxCount = 9;
+				this.highlightOne = true;
+				this.extraPointCount = 1;
+				break;
+
+			default:
+				this.intValCount = 2500;
+				this.boxCount = 6;
+				this.highlightOne = false;
+				this.extraPointCount = 0;
+				break;
+		}
 	}
 	static getRandBox(boxes) {
 		return boxes[Math.floor(Math.random() * boxes.length)];
 	}
 }
+let qSelect = (array) => {
+	return array.map((str) => {
+		return document.querySelector(str);
+	});
+};
 
 let increment = (user, comp, boxes) => {
 	user.choiceArray = [];
 	comp.choiceArray.push(Computer.getRandBox(boxes));
-	highlightChoices(comp.choiceArray);
+	comp.highlightOne ? highlightChoices(comp.choiceArray[-1]) : highlightChoices(comp.choiceArray);
+
 	addBoxListeners(user, comp, boxes);
 	keepPlaying(user, comp, boxes);
 };
-let play = () => {
-	let user = new User('tyler');
-	let comp = new Computer();
-	let button = document.querySelector('#play');
-	let boxes = document.querySelectorAll('.grid-item');
-	button.classList.add('hide');
+let insertBoxes = (comp) => {
+	console.log(comp);
+	let container = document.querySelector('.grid-container'),
+		ul = document.createElement('ul');
+	ul.classList.add('new-item');
+	for (let i = 0; i < comp.boxCount; i++) {
+		container.appendChild(ul);
+	}
+};
+let play = (difficulty = 'easy') => {
+	let user = new User('tyler'),
+		comp = new Computer(difficulty),
+		buttons = document.querySelectorAll('#play'),
+		boxes = document.querySelectorAll('.grid-item');
+	buttons.forEach((btn) => {
+		btn.classList.add('hide');
+	});
+	insertBoxes(comp);
 	increment(user, comp, boxes);
 };
 let addBoxListeners = (user, comp, boxes) => {
@@ -132,9 +175,7 @@ function arraysAreEqual(arr1, arr2) {
 	return true;
 }
 function displayResults(user) {
-	let modal = document.querySelector('.modal');
-	let closeBtn = document.querySelector('.close');
-	let points = document.querySelector('#points');
+	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
 	modal.style.display = 'block';
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
