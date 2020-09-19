@@ -58,7 +58,6 @@ class Computer {
 				this.highlightOne = true;
 				this.extraPointCount = 1;
 				break;
-
 			default:
 				this.intValCount = 2500;
 				this.boxCount = 6;
@@ -80,17 +79,19 @@ let qSelect = (array) => {
 let increment = (user, comp, boxes) => {
 	user.choiceArray = [];
 	comp.choiceArray.push(Computer.getRandBox(boxes));
-	comp.highlightOne ? highlightChoices(comp.choiceArray[-1]) : highlightChoices(comp.choiceArray);
-
+	if (comp.highlightOne) {
+		highlightChoices(comp.choiceArray[comp.choiceArray.length - 1]);
+	} else {
+		highlightChoices(comp.choiceArray);
+	}
 	addBoxListeners(user, comp, boxes);
 	keepPlaying(user, comp, boxes);
 };
 let insertBoxes = (comp) => {
-	console.log(comp);
-	let container = document.querySelector('.grid-container'),
-		ul = document.createElement('ul');
-	ul.classList.add('new-item');
+	let container = document.querySelector('.grid-container');
 	for (let i = 0; i < comp.boxCount; i++) {
+		let ul = document.createElement('ul');
+		ul.classList.add('grid-item');
 		container.appendChild(ul);
 	}
 };
@@ -147,6 +148,7 @@ let blink = (elm) => {
 	}, 1500);
 };
 function highlightChoices(choice) {
+	console.log(choice);
 	if (Array.isArray(choice)) {
 		choice.forEach((elm) => {
 			if (elm.classList.contains('comp-highlight')) {
