@@ -1,14 +1,15 @@
-fetch('http://localhost:3000/leaderboards')
-	.then((response) => {
-		return response.json();
-	})
-	.then((json) => {
-		createLeaderboardHTML(json.included);
-	})
-	.catch((err) => {
-		alert(err);
-	});
-
+document.addEventListener('DOMContentLoaded', () => {
+	fetch('http://localhost:3000/leaderboards')
+		.then((response) => {
+			return response.json();
+		})
+		.then((json) => {
+			createLeaderboardHTML(json.included);
+		})
+		.catch((err) => {
+			alert(err);
+		});
+});
 let createLeaderboardHTML = (user) => {
 	let container = document.querySelector('.lb-container');
 	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
