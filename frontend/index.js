@@ -10,17 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			alert(err);
 		});
 });
-let createLeaderboardHTML = (user) => {
-	let container = document.querySelector('.lb-container');
-	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
-	createUserHTML(user);
-};
-let createUserHTML = (users) => {
-	let ul = document.querySelector('ul.lb');
-	users.map((user, i) => {
-		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
-	});
-};
 class User {
 	constructor(username) {
 		this.username = username;
@@ -50,20 +39,17 @@ class Computer {
 			case 'hard':
 				this.intValCount = 1000;
 				this.boxCount = 12;
-				this.highlightOne = true;
-				this.extraPointCount = 2;
+				this.extraPointCount = 3;
 				break;
 			case 'medium':
 				this.intValCount = 1750;
 				this.boxCount = 9;
-				this.highlightOne = true;
-				this.extraPointCount = 1;
+				this.extraPointCount = 2;
 				break;
 			default:
 				this.intValCount = 2500;
 				this.boxCount = 6;
-				this.highlightOne = false;
-				this.extraPointCount = 0;
+				this.extraPointCount = 1;
 				break;
 		}
 	}
@@ -80,11 +66,7 @@ let qSelect = (array) => {
 let increment = (user, comp, boxes) => {
 	user.choiceArray = [];
 	comp.choiceArray.push(Computer.getRandBox(boxes));
-	if (comp.highlightOne) {
-		highlightChoices(comp.choiceArray[comp.choiceArray.length - 1]);
-	} else {
-		highlightChoices(comp.choiceArray);
-	}
+	highlightChoices(comp);
 	addBoxListeners(user, comp, boxes);
 	keepPlaying(user, comp, boxes);
 };
@@ -122,7 +104,6 @@ let addBoxListeners = (user, comp, boxes) => {
 	});
 	return boxes;
 };
-
 let keepPlaying = (user, comp, boxes) => {
 	let click = User.waitForClick();
 	click.then(() => {
@@ -130,37 +111,36 @@ let keepPlaying = (user, comp, boxes) => {
 			setTimeout(() => {
 				user.choiceArray = [];
 				increment(user, comp, boxes);
-			}, 2000);
+			}, comp.intValCount + 250);
 		} else if (user.choiceArray.length !== comp.choiceArray.length) {
 			keepPlaying(user, comp, boxes);
 		} else {
-			displayResults(user);
+			displayResults(user, comp);
 		}
 	});
 };
-let blink = (elm) => {
+let blink = (elm, count) => {
 	let flash = setInterval(() => {
 		setTimeout(() => {
 			elm.classList.toggle('comp-highlight');
-		}, 300);
-	}, 250);
+		}, count / 6 + 50);
+	}, count / 6);
 	setTimeout(() => {
 		clearInterval(flash);
-	}, 1500);
+	}, count);
 };
 function highlightChoices(choice) {
 	console.log(choice);
-	if (Array.isArray(choice)) {
-		choice.forEach((elm) => {
-			if (elm.classList.contains('comp-highlight')) {
-				blink(elm);
-			} else {
-				elm.classList.add('comp-highlight');
-				setTimeout(() => {
-					elm.classList.remove('comp-highlight');
-				}, 1500);
-			}
-		});
+	if (choice instanceof Computer) {
+		let lastElm = choice.choiceArray.slice(-1)[0];
+		if (lastElm.classList.contains('comp-highlight')) {
+			blink(lastElm, choice.intValCount);
+		} else {
+			lastElm.classList.add('comp-highlight');
+			setTimeout(() => {
+				lastElm.classList.remove('comp-highlight');
+			}, choice.intValCount);
+		}
 	} else {
 		choice.classList.add('highlight');
 		setTimeout(() => {
@@ -177,13 +157,14 @@ function arraysAreEqual(arr1, arr2) {
 	}
 	return true;
 }
-function displayResults(user) {
+function displayResults(user, comp) {
 	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
 	modal.style.display = 'block';
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
 	});
-	points.textContent = user.points;
+
+	points.textContent = user.points * comp.extraPointCount;
 	// failure msg
 	// display score
 	// use a modal?
