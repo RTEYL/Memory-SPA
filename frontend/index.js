@@ -14,17 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		play(event.submitter.innerText);
 	});
 });
-let createLeaderboardHTML = (user) => {
-	let container = document.querySelector('.lb-container');
-	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
-	createUserHTML(user);
-};
-let createUserHTML = (users) => {
-	let ul = document.querySelector('ul.lb');
-	users.map((user, i) => {
-		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
-	});
-};
 class User {
 	constructor(username) {
 		this.username = username;
@@ -77,6 +66,17 @@ class Computer {
 		return boxes[Math.floor(Math.random() * boxes.length)];
 	}
 }
+let createLeaderboardHTML = (user) => {
+	let container = document.querySelector('.lb-container');
+	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
+	createUserHTML(user);
+};
+let createUserHTML = (users) => {
+	let ul = document.querySelector('ul.lb');
+	users.map((user, i) => {
+		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
+	});
+};
 let qSelect = (array) => {
 	return array.map((str) => {
 		return document.querySelector(str);
@@ -135,13 +135,13 @@ let fetchUser = (user, method) => {
 let play = (difficulty) => {
 	let [ username, label ] = qSelect([ '#username', '.username-label' ]);
 	if (username.value) {
-		hideNode(username);
-		hideNode(label);
 		let user = new User(username.value),
 			comp = new Computer(difficulty),
 			buttons = document.querySelectorAll('#play');
-		fetchUser(user, 'POST');
 		console.log(user);
+		fetchUser(user, 'POST');
+		hideNode(username);
+		hideNode(label);
 		buttons.forEach((btn) => {
 			hideNode(btn);
 		});

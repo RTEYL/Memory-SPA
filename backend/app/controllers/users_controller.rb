@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   def create
-    user = User.find_or_create_by(user_params(params))
+    user = User.find_or_create_by(username: user_params(params)[:username])
     if user
       render json: UserSerializer.new(user)
     else
@@ -8,7 +8,6 @@ class UsersController < ApplicationController
     end
   end
   def update
-    byebug
     user = User.update(user_params(params))
     if user
       render json: UserSerializer.new(user)
