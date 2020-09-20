@@ -175,8 +175,23 @@ function displayResults(user, comp) {
 	});
 
 	points.textContent = user.points * comp.extraPointCount;
-	// failure msg
-	// display score
-	// use a modal?
-	// update info with fetch
+	let configFetch = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json'
+		},
+		body: JSON.stringify({
+			username: user.username,
+			score: user.points,
+			leaderboard_id: 1
+		})
+	};
+	fetch('http://localhost:3000/users', configFetch)
+		.then((resp) => {
+			return resp.json;
+		})
+		.then((obj) => {
+			console.log(obj);
+		});
 }
