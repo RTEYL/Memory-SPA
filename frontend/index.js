@@ -66,49 +66,13 @@ class Computer {
 		return boxes[Math.floor(Math.random() * boxes.length)];
 	}
 }
-let createLeaderboardHTML = (user) => {
-	let container = document.querySelector('.lb-container');
-	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
-	createUserHTML(user);
-};
-let createUserHTML = (users) => {
-	let ul = document.querySelector('ul.lb');
-	users.map((user, i) => {
-		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
-	});
-};
-let qSelect = (array) => {
-	return array.map((str) => {
-		return document.querySelector(str);
-	});
-};
-let hideNode = (node) => {
-	node.classList.add('hide');
-};
-let increment = (user, comp, boxes) => {
-	user.choiceArray = [];
-	comp.choiceArray.push(Computer.getRandBox(boxes));
-	highlightChoices(comp);
-	addBoxListeners(user, comp, boxes);
-	keepPlaying(user, comp, boxes);
-};
-let insertBoxes = (comp) => {
-	let container = document.querySelector('.grid-container');
-	for (let i = 0; i < comp.boxCount; i++) {
-		let ul = document.createElement('ul');
-		ul.classList.add('grid-item');
-		container.appendChild(ul);
-	}
-};
 let fetchUser = (user, method) => {
 	let url = '';
-	console.log(user);
 	if (user.id) {
 		url = `http://localhost:3000/users/${user.id}`;
 	} else {
 		url = 'http://localhost:3000/users';
 	}
-	console.log(url);
 	let configFetch = {
 		method: method,
 		headers: {
@@ -127,8 +91,6 @@ let fetchUser = (user, method) => {
 			return resp.json();
 		})
 		.then((json) => {
-			console.log(user);
-			console.log(json);
 			user.id = json.data.attributes.id;
 			return user;
 		})
@@ -136,24 +98,35 @@ let fetchUser = (user, method) => {
 			alert(err);
 		});
 };
-let play = (difficulty) => {
-	let [ username, label ] = qSelect([ '#username', '.username-label' ]);
-	if (username.value) {
-		let user = new User(username.value),
-			comp = new Computer(difficulty),
-			buttons = document.querySelectorAll('#play');
-		fetchUser(user, 'POST');
-		hideNode(document.querySelector('.instructions'));
-		hideNode(username);
-		hideNode(label);
-		buttons.forEach((btn) => {
-			hideNode(btn);
+let createLeaderboardHTML = (user) => {
+	let container = document.querySelector('.lb-container');
+	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
+	createUserHTML(user);
+};
+let createUserHTML = (users) => {
+	let ul = document.querySelector('ul.lb');
+	users.map((user, i) => {
+		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
+	});
+};
+let qSelect = (array) => {
+	return array.map((str) => {
+		return document.querySelector(str);
+	});
+};
+let hideNodes = (...args) => {
+	args.forEach((arr) => {
+		arr.forEach((node) => {
+			node.classList.add('hide');
 		});
-		insertBoxes(comp);
-		let boxes = document.querySelectorAll('.grid-item');
-		increment(user, comp, boxes);
-	} else {
-		alert('Please enter a username to continue.');
+	});
+};
+let insertBoxes = (comp) => {
+	let container = document.querySelector('.grid-container');
+	for (let i = 0; i < comp.boxCount; i++) {
+		let ul = document.createElement('ul');
+		ul.classList.add('grid-item');
+		container.appendChild(ul);
 	}
 };
 let addBoxListeners = (user, comp, boxes) => {
@@ -163,13 +136,73 @@ let addBoxListeners = (user, comp, boxes) => {
 				const eventClicked = event.target;
 				eventClicked.classList.add('listening');
 				user.choiceArray.push(event.currentTarget);
-				highlightChoices(event.currentTarget);
+				highlightChoice(event.currentTarget);
 				keepPlaying(user, comp, boxes);
 			});
 			node.setAttribute('listening', 'true');
 		}
 	});
 	return boxes;
+};
+let increment = (user, comp, boxes) => {
+	user.choiceArray = [];
+	comp.choiceArray.push(Computer.getRandBox(boxes));
+	highlightChoice(comp);
+	addBoxListeners(user, comp, boxes);
+	keepPlaying(user, comp, boxes);
+};
+let blink = (elm, count) => {
+	let flash = setInterval(() => {
+		setTimeout(() => {
+			elm.classList.toggle('comp-highlight');
+		}, count / 6 + 50);
+	}, count / 6);
+	setTimeout(() => {
+		clearInterval(flash);
+	}, count);
+};
+function highlightChoice(choice) {
+	if (choice instanceof Computer) {
+		let lastElm = choice.choiceArray.slice(-1)[0];
+		if (lastElm.classList.contains('comp-highlight')) {
+			blink(lastElm, choice.intValCount);
+		} else {
+			lastElm.classList.add('comp-highlight');
+			setTimeout(() => {
+				lastElm.classList.remove('comp-highlight');
+			}, choice.intValCount);
+		}
+	} else {
+		choice.classList.add('highlight');
+		setTimeout(() => {
+			choice.classList.remove('highlight');
+		}, 1250);
+	}
+}
+let arraysAreEqual = (arr1, arr2) => {
+	if (arr1 === arr2) return true;
+	if (arr1 == null || arr2 == null) return false;
+	if (arr1.length !== arr2.length) return false;
+	for (let i = 0; i < arr1.length; i++) {
+		if (arr1[i] !== arr2[i]) return false;
+	}
+	return true;
+};
+let play = (difficulty) => {
+	let [ username, label ] = qSelect([ '#username', '.username-label' ]);
+	if (username.value) {
+		let user = new User(username.value),
+			comp = new Computer(difficulty),
+			buttons = document.querySelectorAll('#play'),
+			instDiv = document.querySelector('.instructions');
+		fetchUser(user, 'POST');
+		hideNodes(buttons, [ instDiv, username, label ]);
+		insertBoxes(comp);
+		let boxes = document.querySelectorAll('.grid-item');
+		increment(user, comp, boxes);
+	} else {
+		alert('Please enter a username to continue.');
+	}
 };
 let keepPlaying = (user, comp, boxes) => {
 	let click = User.waitForClick();
@@ -187,44 +220,7 @@ let keepPlaying = (user, comp, boxes) => {
 		}
 	});
 };
-let blink = (elm, count) => {
-	let flash = setInterval(() => {
-		setTimeout(() => {
-			elm.classList.toggle('comp-highlight');
-		}, count / 6 + 50);
-	}, count / 6);
-	setTimeout(() => {
-		clearInterval(flash);
-	}, count);
-};
-function highlightChoices(choice) {
-	if (choice instanceof Computer) {
-		let lastElm = choice.choiceArray.slice(-1)[0];
-		if (lastElm.classList.contains('comp-highlight')) {
-			blink(lastElm, choice.intValCount);
-		} else {
-			lastElm.classList.add('comp-highlight');
-			setTimeout(() => {
-				lastElm.classList.remove('comp-highlight');
-			}, choice.intValCount);
-		}
-	} else {
-		choice.classList.add('highlight');
-		setTimeout(() => {
-			choice.classList.remove('highlight');
-		}, 1500);
-	}
-}
-function arraysAreEqual(arr1, arr2) {
-	if (arr1 === arr2) return true;
-	if (arr1 == null || arr2 == null) return false;
-	if (arr1.length !== arr2.length) return false;
-	for (let i = 0; i < arr1.length; i++) {
-		if (arr1[i] !== arr2[i]) return false;
-	}
-	return true;
-}
-function displayResults(user, comp) {
+let displayResults = (user, comp) => {
 	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
 	modal.style.display = 'block';
 	points.textContent = user.points;
@@ -232,4 +228,4 @@ function displayResults(user, comp) {
 		modal.style.display = 'none';
 		fetchUser(user, 'PATCH');
 	});
-}
+};
