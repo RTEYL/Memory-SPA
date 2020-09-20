@@ -8,8 +8,9 @@ class UsersController < ApplicationController
     end
   end
   def update
-    user = User.update(user_params(params))
+    user = User.find_by_id(user_params(params)[:id])
     if user
+      user.update(user_params(params))
       render json: UserSerializer.new(user)
     else
       render json: {errors: user.errors.full_messages}
