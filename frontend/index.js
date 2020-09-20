@@ -106,7 +106,7 @@ let createLeaderboardHTML = (user) => {
 let createUserHTML = (users) => {
 	let ul = document.querySelector('ul.lb');
 	users.map((user, i) => {
-		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.score}</li>`;
+		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.highest_score}</li>`;
 	});
 };
 let qSelect = (array) => {

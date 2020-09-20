@@ -10,6 +10,7 @@ class UsersController < ApplicationController
   def update
     user = User.find_by_id(user_params(params)[:id])
     if user
+      user.new_high_score(user_params(params)[:score])
       user.update(user_params(params))
       render json: UserSerializer.new(user)
     else
