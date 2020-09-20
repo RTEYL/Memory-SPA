@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   def create
-    user = User.find_or_create_by(username: user_params(params)[:username])
-    if user
+    user = User.find_or_create_by(username: user_params(params)[:username], leaderboard_id: user_params(params)[:leaderboard_id])
+    if user.save
       render json: UserSerializer.new(user)
     else
       render json: {errors: user.errors.full_messages}

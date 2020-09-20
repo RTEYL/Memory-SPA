@@ -18,8 +18,8 @@ class User {
 	constructor(username) {
 		this.username = username;
 		this.choiceArray = [];
-		this.points = this.choiceArray.length - 1;
-		this._id = null;
+		this.points = 0;
+		this._id;
 	}
 	get id() {
 		return this._id;
@@ -102,11 +102,13 @@ let insertBoxes = (comp) => {
 };
 let fetchUser = (user, method) => {
 	let url = '';
+	console.log(user);
 	if (user.id) {
 		url = `http://localhost:3000/users/${user.id}`;
 	} else {
 		url = 'http://localhost:3000/users';
 	}
+	console.log(url);
 	let configFetch = {
 		method: method,
 		headers: {
@@ -125,6 +127,8 @@ let fetchUser = (user, method) => {
 			return resp.json();
 		})
 		.then((json) => {
+			console.log(user);
+			console.log(json);
 			user.id = json.data.attributes.id;
 			return user;
 		})
@@ -138,7 +142,6 @@ let play = (difficulty) => {
 		let user = new User(username.value),
 			comp = new Computer(difficulty),
 			buttons = document.querySelectorAll('#play');
-		console.log(user);
 		fetchUser(user, 'POST');
 		hideNode(username);
 		hideNode(label);
@@ -172,6 +175,7 @@ let keepPlaying = (user, comp, boxes) => {
 	click.then(() => {
 		if (arraysAreEqual(user.choiceArray, comp.choiceArray)) {
 			setTimeout(() => {
+				user.points += comp.extraPointCount;
 				user.choiceArray = [];
 				increment(user, comp, boxes);
 			}, comp.intValCount + 250);
@@ -222,7 +226,6 @@ function arraysAreEqual(arr1, arr2) {
 function displayResults(user, comp) {
 	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
 	modal.style.display = 'block';
-	user.points *= comp.extraPointCount;
 	points.textContent = user.points;
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
