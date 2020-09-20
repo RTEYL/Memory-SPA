@@ -8,7 +8,6 @@
 </head>
 <body>
   <h1>Memory Game</h1>
-  <h3 id="head">Welcome to the Memory Game!</h3>
   <form action="" method="post" id='user-form'>
     <label class='username-label' for="username">Enter a Username to play!</label>
     <input type="text" id="username" autofocus>
@@ -16,26 +15,27 @@
     <button id="play" type="submit">Medium</button>
     <button id="play" type="submit">Hard</button>
   </form>
-  <div class="lb-container"></div>
-  <div class="instuctions">
-    <h4>Instructions</h4>
-    <p>To begin click the 'Play' button</p>
-    <ul>Once the game starts:
-      <li><p>A random box will <span id='t-highlight'>highlight</span></p></li>
-      <li><p>Click the correct <span id='t-highlight'>highlighted box</span></p></li>
-      <li><p>The next box will <span id='t-highlight'>highlight</span></p></li>
-      <li><p>Click the first box then click on the new box</p></li>
-      <li><p>The goal is to <span id='t-highlight'>remember</span> the order of each box as it's highlighted the longer you play the more difficult it will be to remember the correct order of boxes to click</p></li>
-    </ul>
-  </div>
   <div class="grid-container">
-  </div>
-  <div class="modal">
-    <div class="modal-content">
-      <button class="close">&times;</button>
-      <h3>You got <span id="points"></span> Points!</h3>
+    <div class="modal">
+      <div class="modal-content">
+        <button class="close">&times;</button>
+        <h3>You got <span id="points"></span> Points!</h3>
+      </div>
     </div>
   </div>
+<div class="container">
+  <div class="lb-container"></div>
+  <div class="instructions">
+      <h4>Instructions</h4>
+      <ul>Once the game starts:
+        <li><p>A random box will <span id='t-highlight'>highlight</span></p></li>
+        <li><p>Click the correct <span id='t-highlight'>highlighted box</span></p></li>
+        <li><p>The next box will <span id='t-highlight'>highlight</span></p></li>
+        <li><p>Click the first box then click on the new box</p></li>
+        <p>The goal is to remember the order of each box as it's highlighted, the longer you play the more difficult it will be to remember the correct order of boxes to click</p>
+      </ul>
+  </div>
+</div>
 
   <script src="index.js"></script>
 </body>

@@ -143,6 +143,7 @@ let play = (difficulty) => {
 			comp = new Computer(difficulty),
 			buttons = document.querySelectorAll('#play');
 		fetchUser(user, 'POST');
+		hideNode(document.querySelector('.instructions'));
 		hideNode(username);
 		hideNode(label);
 		buttons.forEach((btn) => {
