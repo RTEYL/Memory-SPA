@@ -7,11 +7,19 @@ class UsersController < ApplicationController
       render json: {errors: user.errors.full_messages}
     end
   end
-
+  def update
+    byebug
+    user = User.update(user_params(params))
+    if user
+      render json: UserSerializer.new(user)
+    else
+      render json: {errors: user.errors.full_messages}
+    end
+  end
 
   private
 
   def user_params(params)
-    params.require(:user).permit(:username, :score, :leaderboard_id)
+    params.require(:user).permit(:id, :username, :score, :leaderboard_id)
   end
 end

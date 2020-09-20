@@ -29,9 +29,14 @@ class User {
 	constructor(username) {
 		this.username = username;
 		this.choiceArray = [];
+		this.points = this.choiceArray.length - 1;
+		this._id = null;
 	}
-	get points() {
-		return this.choiceArray.length - 1;
+	get id() {
+		return this._id;
+	}
+	set id(val) {
+		this._id = val;
 	}
 	static waitForClick() {
 		return new Promise((resolve) => {
@@ -95,6 +100,38 @@ let insertBoxes = (comp) => {
 		container.appendChild(ul);
 	}
 };
+let fetchUser = (user, method) => {
+	let url = '';
+	if (user.id) {
+		url = `http://localhost:3000/users/${user.id}`;
+	} else {
+		url = 'http://localhost:3000/users';
+	}
+	let configFetch = {
+		method: method,
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json'
+		},
+		body: JSON.stringify({
+			username: user.username,
+			score: user.points,
+			leaderboard_id: 1,
+			id: user.id
+		})
+	};
+	fetch(url, configFetch)
+		.then((resp) => {
+			return resp.json();
+		})
+		.then((json) => {
+			user.id = json.data.attributes.id;
+			return user;
+		})
+		.catch((err) => {
+			alert(err);
+		});
+};
 let play = (difficulty) => {
 	let [ username, label ] = qSelect([ '#username', '.username-label' ]);
 	if (username.value) {
@@ -103,6 +140,8 @@ let play = (difficulty) => {
 		let user = new User(username.value),
 			comp = new Computer(difficulty),
 			buttons = document.querySelectorAll('#play');
+		fetchUser(user, 'POST');
+		console.log(user);
 		buttons.forEach((btn) => {
 			hideNode(btn);
 		});
@@ -183,22 +222,10 @@ function arraysAreEqual(arr1, arr2) {
 function displayResults(user, comp) {
 	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
 	modal.style.display = 'block';
+	user.points *= comp.extraPointCount;
+	points.textContent = user.points;
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
-		let configFetch = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			},
-			body: JSON.stringify({
-				username: user.username,
-				score: user.points,
-				leaderboard_id: 1
-			})
-		};
-		fetch('http://localhost:3000/users', configFetch);
+		fetchUser(user, 'PATCH');
 	});
-
-	points.textContent = user.points * comp.extraPointCount;
 }
