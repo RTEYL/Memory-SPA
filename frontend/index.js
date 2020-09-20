@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		.catch((err) => {
 			alert(err);
 		});
+	document.querySelector('#user-form').addEventListener('submit', (event) => {
+		event.preventDefault();
+		play(event.submitter.innerText);
+	});
 });
 let createLeaderboardHTML = (user) => {
 	let container = document.querySelector('.lb-container');
@@ -47,12 +51,12 @@ class Computer {
 
 	set difficulty(val) {
 		switch (val) {
-			case 'hard':
+			case 'Hard':
 				this.intValCount = 1000;
 				this.boxCount = 12;
 				this.extraPointCount = 3;
 				break;
-			case 'medium':
+			case 'Medium':
 				this.intValCount = 1750;
 				this.boxCount = 9;
 				this.extraPointCount = 2;
@@ -73,7 +77,9 @@ let qSelect = (array) => {
 		return document.querySelector(str);
 	});
 };
-
+let hideNode = (node) => {
+	node.classList.add('hide');
+};
 let increment = (user, comp, boxes) => {
 	user.choiceArray = [];
 	comp.choiceArray.push(Computer.getRandBox(boxes));
@@ -89,16 +95,23 @@ let insertBoxes = (comp) => {
 		container.appendChild(ul);
 	}
 };
-let play = (difficulty = 'easy') => {
-	let user = new User('tyler'),
-		comp = new Computer(difficulty),
-		buttons = document.querySelectorAll('#play');
-	buttons.forEach((btn) => {
-		btn.classList.add('hide');
-	});
-	insertBoxes(comp);
-	let boxes = document.querySelectorAll('.grid-item');
-	increment(user, comp, boxes);
+let play = (difficulty) => {
+	let [ username, label ] = qSelect([ '#username', '.username-label' ]);
+	if (username.value) {
+		hideNode(username);
+		hideNode(label);
+		let user = new User(username.value),
+			comp = new Computer(difficulty),
+			buttons = document.querySelectorAll('#play');
+		buttons.forEach((btn) => {
+			hideNode(btn);
+		});
+		insertBoxes(comp);
+		let boxes = document.querySelectorAll('.grid-item');
+		increment(user, comp, boxes);
+	} else {
+		alert('Please enter a username to continue.');
+	}
 };
 let addBoxListeners = (user, comp, boxes) => {
 	boxes.forEach((node) => {
@@ -172,26 +185,20 @@ function displayResults(user, comp) {
 	modal.style.display = 'block';
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
+		let configFetch = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			body: JSON.stringify({
+				username: user.username,
+				score: user.points,
+				leaderboard_id: 1
+			})
+		};
+		fetch('http://localhost:3000/users', configFetch);
 	});
 
 	points.textContent = user.points * comp.extraPointCount;
-	let configFetch = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Accept: 'application/json'
-		},
-		body: JSON.stringify({
-			username: user.username,
-			score: user.points,
-			leaderboard_id: 1
-		})
-	};
-	fetch('http://localhost:3000/users', configFetch)
-		.then((resp) => {
-			return resp.json;
-		})
-		.then((obj) => {
-			console.log(obj);
-		});
 }
