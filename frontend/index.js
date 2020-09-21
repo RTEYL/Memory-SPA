@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 	fetch('http://localhost:3000/leaderboards')
-		.then((response) => {
-			return response.json();
+		.then((resp) => {
+			console.log(resp);
+			return resp.json();
 		})
 		.then((json) => {
 			createLeaderboardHTML(json.included);
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#user-form').addEventListener('submit', (event) => {
 		event.preventDefault();
 		play(event.submitter.innerText);
+		return false;
 	});
 });
 class User {
@@ -88,11 +90,12 @@ let fetchUser = (user, method) => {
 	};
 	fetch(url, configFetch)
 		.then((resp) => {
+			console.log(resp);
 			return resp.json();
 		})
 		.then((json) => {
 			user.id = json.data.attributes.id;
-			return user;
+			return false;
 		})
 		.catch((err) => {
 			alert(err);
@@ -161,7 +164,7 @@ let blink = (elm, count) => {
 		clearInterval(flash);
 	}, count);
 };
-function highlightChoice(choice) {
+let highlightChoice = (choice) => {
 	if (choice instanceof Computer) {
 		let lastElm = choice.choiceArray.slice(-1)[0];
 		if (lastElm.classList.contains('comp-highlight')) {
@@ -178,7 +181,7 @@ function highlightChoice(choice) {
 			choice.classList.remove('highlight');
 		}, 1250);
 	}
-}
+};
 let arraysAreEqual = (arr1, arr2) => {
 	if (arr1 === arr2) return true;
 	if (arr1 == null || arr2 == null) return false;
