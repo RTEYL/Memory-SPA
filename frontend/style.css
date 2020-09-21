@@ -1,11 +1,24 @@
 body {
-	background-color: #CE4A7EFF;
+	background-image: url('./images/maeghan-smulders-1PgAosf861M-unsplash.jpg');
+	background-blend-mode: hue;
+	background-size: cover;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	font-family: cursive;
+	color: whitesmoke;
+	text-shadow: 0px 0px 50px rgba(5, 223, 187, 1);
 }
 h1 {
 	text-align: center;
 }
 button#play {
 	box-sizing: border-box;
+	border: 2px solid whitesmoke;
+	background-color: rgba(5, 223, 187, .5);
+	margin-left: 20px;
+}
+button#play:hover {
+	cursor: pointer;
 }
 .hide {
 	display: none;
@@ -18,7 +31,12 @@ ul.lb {
 }
 div.instructions {
 	align-self: flex-end;
-	flex-basis: 50%;
+	flex-basis: 70%;
+}
+div.lb-container {
+	border: 2px solid whitesmoke;
+	background-color: rgba(5, 223, 187, .5);
+	padding: 10px;
 }
 div.container {
 	display: flex;
@@ -37,7 +55,8 @@ div.container {
 	width: 20%;
 	height: 30%;
 	padding: 20px;
-	border: 4px solid #1C1C1BFF;
+	border: 4px solid whitesmoke;
+	background-color: rgba(5, 223, 187, .5);
 }
 .grid-item:hover {
 	cursor: pointer;
@@ -55,24 +74,24 @@ div.container {
 	background-color: #1C1C1BFF;
 }
 #t-highlight {
-	background-color: rgba(5, 223, 187);
+	background-color: rgba(5, 223, 187, .5);
+	border: 1px solid whitesmoke;
 }
 .modal {
 	display: none;
 	width: 100%;
-	height: 100%;
 	z-index: 1;
-	background-color: rgba(5, 223, 187, 0.85);
 }
 .modal-content {
 	position: absolute;
 	width: 50%;
-	height: 50%;
-	top: 10%;
+	height: 15%;
+	top: 18.5%;
 	left: 19%;
-	border: 4px solid black;
+	border: 4px solid whitesmoke;
 	z-index: 1;
-	background-color: #CE4A7EFF;
+	text-align: center;
+	background-color: rgba(5, 223, 187, 1);
 	animation: modal 1.5s linear forwards;
 }
 

@@ -222,6 +222,8 @@ let keepPlaying = (user, comp, boxes) => {
 };
 let displayResults = (user, comp) => {
 	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
+	let boxes = document.querySelectorAll('.grid-item');
+	hideNodes(boxes);
 	modal.style.display = 'block';
 	points.textContent = user.points;
 	closeBtn.addEventListener('click', function() {
