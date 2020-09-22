@@ -193,16 +193,15 @@ let arraysAreEqual = (arr1, arr2) => {
 	return true;
 };
 let play = (difficulty) => {
-	let [ username, label ] = qSelect([ '#username', '.username-label' ]);
+	let [ username, label, instDiv ] = qSelect([ '#username', '.username-label', '.instructions' ]),
+		buttons = document.querySelectorAll('#play'),
+		boxes = document.querySelectorAll('.grid-item');
 	if (username.value) {
 		let user = new User(username.value),
-			comp = new Computer(difficulty),
-			buttons = document.querySelectorAll('#play'),
-			instDiv = document.querySelector('.instructions');
+			comp = new Computer(difficulty);
 		fetchUser(user, 'POST');
 		hideNodes(buttons, [ instDiv, username, label ]);
 		insertBoxes(comp);
-		let boxes = document.querySelectorAll('.grid-item');
 		increment(user, comp, boxes);
 	} else {
 		alert('Please enter a username to continue.');
