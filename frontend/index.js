@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 	fetch('http://localhost:3000/leaderboards')
 		.then((resp) => {
-			console.log(resp);
 			return resp.json();
 		})
 		.then((json) => {
@@ -10,10 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		.catch((err) => {
 			alert(err);
 		});
-	document.querySelector('#user-form').addEventListener('submit', (event) => {
-		event.preventDefault();
-		play(event.submitter.innerText);
-		return false;
+	let buttons = document.querySelectorAll('#play');
+	buttons.forEach((btn) => {
+		btn.addEventListener('click', (event) => {
+			event.preventDefault();
+			play(event.target.innerText);
+		});
 	});
 });
 class User {
@@ -48,17 +49,17 @@ class Computer {
 	set difficulty(val) {
 		switch (val) {
 			case 'Hard':
-				this.intValCount = 1000;
+				this.intValCount = 800;
 				this.boxCount = 12;
 				this.extraPointCount = 3;
 				break;
 			case 'Medium':
-				this.intValCount = 1750;
+				this.intValCount = 1400;
 				this.boxCount = 9;
 				this.extraPointCount = 2;
 				break;
 			default:
-				this.intValCount = 2500;
+				this.intValCount = 2000;
 				this.boxCount = 6;
 				this.extraPointCount = 1;
 				break;
@@ -68,7 +69,7 @@ class Computer {
 		return boxes[Math.floor(Math.random() * boxes.length)];
 	}
 }
-let fetchUser = (user, method) => {
+let fetchUser = async (user, method) => {
 	let url = '';
 	if (user.id) {
 		url = `http://localhost:3000/users/${user.id}`;
@@ -88,7 +89,7 @@ let fetchUser = (user, method) => {
 			id: user.id
 		})
 	};
-	fetch(url, configFetch)
+	await fetch(url, configFetch)
 		.then((resp) => {
 			console.log(resp);
 			return resp.json();
@@ -219,11 +220,11 @@ let keepPlaying = (user, comp, boxes) => {
 		} else if (user.choiceArray.length !== comp.choiceArray.length) {
 			keepPlaying(user, comp, boxes);
 		} else {
-			displayResults(user, comp);
+			displayResults(user);
 		}
 	});
 };
-let displayResults = (user, comp) => {
+let displayResults = (user) => {
 	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
 	let boxes = document.querySelectorAll('.grid-item');
 	hideNodes(boxes);
