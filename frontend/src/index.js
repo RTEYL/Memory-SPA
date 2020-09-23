@@ -91,7 +91,6 @@ let fetchUser = async (user, method) => {
 	};
 	await fetch(url, configFetch)
 		.then((resp) => {
-			console.log(resp);
 			return resp.json();
 		})
 		.then((json) => {
@@ -104,13 +103,13 @@ let fetchUser = async (user, method) => {
 };
 let createLeaderboardHTML = (user) => {
 	let container = document.querySelector('.lb-container');
-	container.innerHTML += `<h3>Leaderboard</h3><ul class='lb'></ul>`;
+	container.innerHTML += `<h3>Leaderboard</h3><ol class='lb'></ol>`;
 	createUserHTML(user);
 };
 let createUserHTML = (users) => {
-	let ul = document.querySelector('ul.lb');
-	users.map((user, i) => {
-		ul.innerHTML += `<li>${i + 1}: ${user.attributes.username} scored: ${user.attributes.highest_score}</li>`;
+	let ol = document.querySelector('ol.lb');
+	users.map((user) => {
+		ol.innerHTML += `<li>${user.attributes.username} scored: ${user.attributes.highest_score}</li>`;
 	});
 };
 let qSelect = (array) => {
@@ -128,9 +127,9 @@ let hideNodes = (...args) => {
 let insertBoxes = (comp) => {
 	let container = document.querySelector('.grid-container');
 	for (let i = 0; i < comp.boxCount; i++) {
-		let ul = document.createElement('ul');
-		ul.classList.add('grid-item');
-		container.appendChild(ul);
+		let div = document.createElement('div');
+		div.classList.add('grid-item');
+		container.appendChild(div);
 	}
 };
 let addBoxListeners = (user, comp, boxes) => {
@@ -193,15 +192,15 @@ let arraysAreEqual = (arr1, arr2) => {
 	return true;
 };
 let play = (difficulty) => {
-	let [ username, label, instDiv ] = qSelect([ '#username', '.username-label', '.instructions' ]),
-		buttons = document.querySelectorAll('#play'),
-		boxes = document.querySelectorAll('.grid-item');
+	let [ username, form, instDiv ] = qSelect([ '#username', '.form', '.instructions' ]),
+		buttons = document.querySelectorAll('#play');
 	if (username.value) {
 		let user = new User(username.value),
 			comp = new Computer(difficulty);
 		fetchUser(user, 'POST');
-		hideNodes(buttons, [ instDiv, username, label ]);
+		hideNodes(buttons, [ instDiv, username, form ]);
 		insertBoxes(comp);
+		let boxes = document.querySelectorAll('.grid-item');
 		increment(user, comp, boxes);
 	} else {
 		alert('Please enter a username to continue.');
