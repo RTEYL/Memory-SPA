@@ -9,98 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		.catch((err) => {
 			alert(err);
 		});
-	let buttons = document.querySelectorAll('#play');
-	buttons.forEach((btn) => {
-		btn.addEventListener('click', (event) => {
-			event.preventDefault();
-			play(event.target.innerText);
-		});
-	});
 });
-class User {
-	constructor(username) {
-		this.username = username;
-		this.choiceArray = [];
-		this.points = 0;
-		this._id;
-	}
-	get id() {
-		return this._id;
-	}
-	set id(val) {
-		this._id = val;
-	}
-	static waitForClick() {
-		return new Promise((resolve) => {
-			let click = document.querySelector('.listening');
-			if (click) {
-				click.classList.remove('listening');
-				resolve();
-			}
-		});
-	}
-}
-class Computer {
-	constructor(difficulty) {
-		this.difficulty = difficulty;
-		this.choiceArray = [];
-	}
 
-	set difficulty(val) {
-		switch (val) {
-			case 'Hard':
-				this.intValCount = 800;
-				this.boxCount = 12;
-				this.extraPointCount = 3;
-				break;
-			case 'Medium':
-				this.intValCount = 1400;
-				this.boxCount = 9;
-				this.extraPointCount = 2;
-				break;
-			default:
-				this.intValCount = 2000;
-				this.boxCount = 6;
-				this.extraPointCount = 1;
-				break;
-		}
-	}
-	static getRandBox(boxes) {
-		return boxes[Math.floor(Math.random() * boxes.length)];
-	}
-}
-let fetchUser = async (user, method) => {
-	let url = '';
-	if (user.id) {
-		url = `http://localhost:3000/users/${user.id}`;
-	} else {
-		url = 'http://localhost:3000/users';
-	}
-	let configFetch = {
-		method: method,
-		headers: {
-			'Content-Type': 'application/json',
-			Accept: 'application/json'
-		},
-		body: JSON.stringify({
-			username: user.username,
-			score: user.points,
-			leaderboard_id: 1,
-			id: user.id
-		})
-	};
-	await fetch(url, configFetch)
-		.then((resp) => {
-			return resp.json();
-		})
-		.then((json) => {
-			user.id = json.data.attributes.id;
-			return false;
-		})
-		.catch((err) => {
-			alert(err);
-		});
-};
 let createLeaderboardHTML = (user) => {
 	let container = document.querySelector('.lb-container');
 	container.innerHTML += `<h3>Leaderboard</h3><ol class='lb'></ol>`;
@@ -132,27 +42,12 @@ let insertBoxes = (comp) => {
 		container.appendChild(div);
 	}
 };
-let addBoxListeners = (user, comp, boxes) => {
-	boxes.forEach((node) => {
-		if (!node.getAttribute('listening')) {
-			node.addEventListener('click', (event) => {
-				const eventClicked = event.target;
-				eventClicked.classList.add('listening');
-				user.choiceArray.push(event.currentTarget);
-				highlightChoice(event.currentTarget);
-				keepPlaying(user, comp, boxes);
-			});
-			node.setAttribute('listening', 'true');
-		}
-	});
-	return boxes;
-};
 let increment = (user, comp, boxes) => {
 	user.choiceArray = [];
 	comp.choiceArray.push(Computer.getRandBox(boxes));
 	highlightChoice(comp);
-	addBoxListeners(user, comp, boxes);
 	keepPlaying(user, comp, boxes);
+	return;
 };
 let blink = (elm, count) => {
 	let flash = setInterval(() => {
@@ -201,14 +96,17 @@ let play = (difficulty) => {
 		hideNodes(buttons, [ instDiv, username, form ]);
 		insertBoxes(comp);
 		let boxes = document.querySelectorAll('.grid-item');
-		increment(user, comp, boxes);
+		return increment(user, comp, boxes);
 	} else {
 		alert('Please enter a username to continue.');
 	}
 };
 let keepPlaying = (user, comp, boxes) => {
 	let click = User.waitForClick();
-	click.then(() => {
+	click.then((e) => {
+		debugger;
+		user.choiceArray.push(e.currentTarget);
+		highlightChoice(e.currentTarget);
 		if (arraysAreEqual(user.choiceArray, comp.choiceArray)) {
 			setTimeout(() => {
 				user.points += comp.extraPointCount;
@@ -216,7 +114,7 @@ let keepPlaying = (user, comp, boxes) => {
 				increment(user, comp, boxes);
 			}, comp.intValCount + 250);
 		} else if (user.choiceArray.length !== comp.choiceArray.length) {
-			keepPlaying(user, comp, boxes);
+			keepPlaying(user, comp, boxes, e);
 		} else {
 			displayResults(user);
 		}
