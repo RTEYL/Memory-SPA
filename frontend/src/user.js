@@ -12,11 +12,11 @@ class User {
 		this._id = val;
 	}
 	static waitForClick() {
-		return new Promise(() => {
+		return new Promise((resolve) => {
 			let click = document.querySelector('.listening');
 			if (click) {
 				click.classList.remove('listening');
-				return click;
+				resolve();
 			}
 		});
 	}
@@ -39,10 +39,12 @@ let fetchUser = (user, method) => {
 			score: user.points,
 			leaderboard_id: 1,
 			id: user.id
-		})
+		}),
+		signal: abortController.signal
 	};
 	fetch(url, configFetch)
 		.then((resp) => {
+			debugger;
 			return resp.json();
 		})
 		.then((json) => {
@@ -51,4 +53,8 @@ let fetchUser = (user, method) => {
 		.catch((err) => {
 			alert(err);
 		});
+};
+let abortController = new AbortController();
+window.onbeforeunload = function(e) {
+	abortController.abort();
 };

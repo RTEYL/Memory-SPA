@@ -17,7 +17,7 @@ h1 {
 	background: rgb(2, 0, 36);
 	background: linear-gradient(148deg, rgba(2, 0, 36, .6) 0%, rgba(255, 0, 0, 0.332) 65%, rgba(63, 54, 238, 0.8) 100%);
 }
-button#play:hover {
+#play:hover {
 	cursor: pointer;
 }
 .hide {
@@ -30,6 +30,7 @@ button#play:hover {
 	column-gap: .75em;
 	background: rgb(2, 0, 36);
 	background: linear-gradient(148deg, rgba(2, 0, 36, .6) 0%, rgba(255, 0, 0, 0.332) 25%, rgba(63, 54, 238, 0.8) 100%);
+	grid-auto-rows: minmax(300px, auto);
 }
 .container .form {
 	margin-right: .75vw;

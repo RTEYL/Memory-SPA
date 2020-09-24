@@ -4,17 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
 			return resp.json();
 		})
 		.then((json) => {
-			createLeaderboardHTML(json.included);
+			return createLeaderboardHTML(json.included);
 		})
 		.catch((err) => {
 			alert(err);
 		});
 });
-
 let createLeaderboardHTML = (user) => {
 	let container = document.querySelector('.lb-container');
 	container.innerHTML += `<h3>Leaderboard</h3><ol class='lb'></ol>`;
-	createUserHTML(user);
+	return createUserHTML(user);
 };
 let createUserHTML = (users) => {
 	let ol = document.querySelector('ol.lb');
@@ -41,13 +40,6 @@ let insertBoxes = (comp) => {
 		div.classList.add('grid-item');
 		container.appendChild(div);
 	}
-};
-let increment = (user, comp, boxes) => {
-	user.choiceArray = [];
-	comp.choiceArray.push(Computer.getRandBox(boxes));
-	highlightChoice(comp);
-	keepPlaying(user, comp, boxes);
-	return;
 };
 let blink = (elm, count) => {
 	let flash = setInterval(() => {
@@ -86,6 +78,13 @@ let arraysAreEqual = (arr1, arr2) => {
 	}
 	return true;
 };
+let increment = (user, comp, boxes) => {
+	user.choiceArray = [];
+	comp.choiceArray.push(Computer.getRandBox(boxes));
+	highlightChoice(comp);
+	addBoxListeners(user, comp, boxes);
+	return keepPlaying(user, comp, boxes);
+};
 let play = (difficulty) => {
 	let [ username, form, instDiv ] = qSelect([ '#username', '.form', '.instructions' ]),
 		buttons = document.querySelectorAll('#play');
@@ -103,20 +102,17 @@ let play = (difficulty) => {
 };
 let keepPlaying = (user, comp, boxes) => {
 	let click = User.waitForClick();
-	click.then((e) => {
-		debugger;
-		user.choiceArray.push(e.currentTarget);
-		highlightChoice(e.currentTarget);
+	click.then(() => {
 		if (arraysAreEqual(user.choiceArray, comp.choiceArray)) {
 			setTimeout(() => {
 				user.points += comp.extraPointCount;
 				user.choiceArray = [];
-				increment(user, comp, boxes);
+				return increment(user, comp, boxes);
 			}, comp.intValCount + 250);
 		} else if (user.choiceArray.length !== comp.choiceArray.length) {
-			keepPlaying(user, comp, boxes, e);
+			return keepPlaying(user, comp, boxes);
 		} else {
-			displayResults(user);
+			return displayResults(user);
 		}
 	});
 };
@@ -128,6 +124,6 @@ let displayResults = (user) => {
 	points.textContent = user.points;
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
-		fetchUser(user, 'PATCH');
+		return fetchUser(user, 'PATCH');
 	});
 };
