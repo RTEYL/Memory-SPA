@@ -4,19 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
 			return resp.json();
 		})
 		.then((json) => {
-			return createLeaderboardHTML(json.included);
+			let users = json.included.sort((a, b) => b.attributes.highest_score - a.attributes.highest_score);
+			return createUserHTML(users);
 		})
 		.catch((err) => {
 			alert(err);
 		});
 });
-let createLeaderboardHTML = (user) => {
-	let container = document.querySelector('.lb-container');
-	container.innerHTML += `<h3>Leaderboard</h3><ol class='lb'></ol>`;
-	return createUserHTML(user);
-};
 let createUserHTML = (users) => {
-	let ol = document.querySelector('ol.lb');
+	let ol = document.querySelector('#u-list');
 	users.map((user) => {
 		ol.innerHTML += `<li>${user.attributes.username} scored: ${user.attributes.highest_score}</li>`;
 	});
@@ -105,7 +101,7 @@ let keepPlaying = (user, comp, boxes) => {
 	click.then(() => {
 		if (arraysAreEqual(user.choiceArray, comp.choiceArray)) {
 			setTimeout(() => {
-				user.points += comp.extraPointCount;
+				user.points += 1;
 				user.choiceArray = [];
 				return increment(user, comp, boxes);
 			}, comp.intValCount + 250);
@@ -124,6 +120,7 @@ let displayResults = (user) => {
 	points.textContent = user.points;
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
-		return fetchUser(user, 'PATCH');
+		fetchUser(user, 'PATCH');
+		return window.location.reload();
 	});
 };
