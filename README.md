@@ -1,12 +1,12 @@
 # Memory-SPA
 Memory-SPA is a Ruby On Rails backend api that stores and respsonds user/leaderboard json data, the JavaScript frontened is a game in wich a user is to remember a given pattern and respond via click to match said pattern
 
-##Installation
+## Installation
 Fork and clone this repo install dependencies with
 ```bash
 $bundle install
 ```
-##Usage
+## Usage
 to play around with the app use
 ```bash
 $rails s
@@ -22,10 +22,10 @@ open the HTML in the browser.
  After the next box is highlighted click on the first box, then the newly highlighted box.
 repeat until failure and the points will be displayed on the leaderboard
 
-##Contributing
+## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
-##License
+## License
 [MIT](https://choosealicense.com/licenses/mit/)
