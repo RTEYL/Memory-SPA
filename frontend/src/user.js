@@ -41,7 +41,7 @@ let fetchUser = (user, method) => {
 			id: user.id
 		})
 	};
-	fetch(url, configFetch)
+	return fetch(url, configFetch)
 		.then((resp) => {
 			return resp.json();
 		})

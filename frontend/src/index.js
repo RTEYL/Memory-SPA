@@ -120,7 +120,8 @@ let displayResults = (user) => {
 	points.textContent = user.points;
 	closeBtn.addEventListener('click', function() {
 		modal.style.display = 'none';
-		fetchUser(user, 'PATCH');
-		return window.location.reload();
+		fetchUser(user, 'PATCH').then(() => {
+			window.location.reload();
+		});
 	});
 };
