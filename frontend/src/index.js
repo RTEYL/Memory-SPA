@@ -1,15 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-	fetch('http://localhost:3000/leaderboards')
-		.then((resp) => {
-			return resp.json();
-		})
-		.then((json) => {
-			let users = json.included.sort((a, b) => b.attributes.highest_score - a.attributes.highest_score);
-			return createUserHTML(users);
-		})
-		.catch((err) => {
-			alert(err);
-		});
+	reset();
 });
 let createUserHTML = (users) => {
 	let ol = document.querySelector('#u-list');
@@ -25,7 +15,7 @@ let qSelect = (array) => {
 let hideNodes = (...args) => {
 	args.forEach((arr) => {
 		arr.forEach((node) => {
-			node.classList.add('hide');
+			node.classList.toggle('hide');
 		});
 	});
 };
@@ -113,9 +103,9 @@ let keepPlaying = (user, comp, boxes) => {
 	});
 };
 let displayResults = (user) => {
-	let [ modal, closeBtn, points ] = qSelect([ '.modal', '.close', '#points' ]);
+	let [ modal, closeBtn, points, lb ] = qSelect([ '.modal', '.close', '#points', '.lb-container' ]);
 	let boxes = document.querySelectorAll('.grid-item');
-	hideNodes(boxes);
+	hideNodes(boxes, [ lb ]);
 	modal.style.display = 'block';
 	points.textContent = user.points;
 	closeBtn.addEventListener('click', function() {

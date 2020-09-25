@@ -10,10 +10,6 @@ let reset = () => {
 		.catch((err) => {
 			alert(err);
 		});
-	let nodes = document.querySelectorAll('.hide');
-	if (nodes) {
-		hideNodes(nodes);
-	}
 };
 let fetchUser = (user, method) => {
 	let url = '';
