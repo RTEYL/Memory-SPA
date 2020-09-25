@@ -13,7 +13,6 @@ let addBoxListeners = (user, comp, boxes) => {
 				user.choiceArray.push(event.currentTarget);
 				highlightChoice(event.currentTarget);
 				keepPlaying(user, comp, boxes);
-				User.waitForClick();
 			});
 			node.setAttribute('listening', 'true');
 		}
