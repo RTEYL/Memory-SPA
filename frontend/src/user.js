@@ -21,34 +21,3 @@ class User {
 		});
 	}
 }
-let fetchUser = (user, method) => {
-	let url = '';
-	if (user.id) {
-		url = `http://localhost:3000/users/${user.id}`;
-	} else {
-		url = 'http://localhost:3000/users';
-	}
-	let configFetch = {
-		method: method,
-		headers: {
-			'Content-Type': 'application/json',
-			Accept: 'application/json'
-		},
-		body: JSON.stringify({
-			username: user.username,
-			score: user.points,
-			leaderboard_id: 1,
-			id: user.id
-		})
-	};
-	return fetch(url, configFetch)
-		.then((resp) => {
-			return resp.json();
-		})
-		.then((json) => {
-			user.id = json.data.attributes.id;
-		})
-		.catch((err) => {
-			alert(err);
-		});
-};
