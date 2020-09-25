@@ -1,13 +1,8 @@
 document.addEventListener('click', function(e) {
-	if (e.target.matches('#play')) {
+	if (e.target.matches('.play')) {
 		e.preventDefault();
-		e.stopPropagation();
 		play(e.target.innerText);
-		return false;
 	}
-	// if (e.target.matches('')) {
-	// 	e.preventDefault();
-	// }
 });
 let addBoxListeners = (user, comp, boxes) => {
 	boxes.forEach((node) => {
